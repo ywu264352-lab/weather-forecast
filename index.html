@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>星座殿堂 · 学术版</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="fire">
+
+<div id="particles"></div>
+<div id="toast" class="toast">已保存 ✨</div>
+
+<!-- 底部导航 -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchNav('overview', this)">
+    <div class="nav-icon">🏠</div><div class="nav-label">首页</div>
+  </button>
+  <button class="nav-btn" onclick="switchNav('fortune', this)">
+    <div class="nav-icon">🔮</div><div class="nav-label">运势</div>
+  </button>
+  <button class="nav-btn" onclick="switchNav('love', this)">
+    <div class="nav-icon">❤️</div><div class="nav-label">爱情</div>
+  </button>
+  <button class="nav-btn" onclick="switchNav('mine', this)">
+    <div class="nav-icon">👤</div><div class="nav-label">我的</div>
+  </button>
+</nav>
+
+<div class="container">
+
+  <!-- ==================== 首页 ==================== -->
+  <div id="nav-overview" class="tab-content active">
+
+    <div class="header">
+      <div class="header-icon">✨</div>
+      <div class="header-title">星座殿堂</div>
+      <div class="header-sub">学术版 · MBTI人格分析 · 2026完整运势</div>
+    </div>
+
+    <!-- 生日识别 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎂</span>自动识别星座</div>
+      <div class="birthday-row">
+        <input class="birthday-input" type="date" id="birthdayInput">
+        <button class="detect-btn" onclick="detectFromBirthday()">识别</button>
+      </div>
+      <div class="birthday-result" id="birthdayResult"></div>
+    </div>
+
+    <!-- 星座选择器 -->
+    <div class="select-wrap">
+      <div class="select-label">— 选择你的星座 —</div>
+      <div class="select-grid" id="signGrid"></div>
+    </div>
+
+    <!-- 英雄卡片 -->
+    <div class="hero-card">
+      <span class="hero-sign" id="heroSign">♈</span>
+      <div class="hero-name" id="heroName">白羊座</div>
+      <div class="hero-date" id="heroDate">3月21日 - 4月19日</div>
+      <div class="hero-element" id="heroElement">🔥 火象星座</div>
+      <div class="subtype-row" id="subtypeRow"></div>
+      <div class="hero-traits" id="heroTraits"></div>
+    </div>
+
+    <!-- MBTI -->
+    <div class="section"><div class="section-header"><span class="section-icon">🧬</span><span class="section-title">MBTI人格分析</span><div class="section-line"></div></div></div>
+    <div class="card" id="mbtiSection"></div>
+
+    <!-- 评分 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⭐</span>六大维度评分</div>
+      <div class="ring-wrap" id="scoreRings"></div>
+    </div>
+
+    <!-- 性格详解 -->
+    <div class="section"><div class="section-header"><span class="section-icon">🧠</span><span class="section-title">性格详解</span><div class="section-line"></div></div></div>
+    <div class="card" id="personalityCard"></div>
+
+    <!-- 幸运物 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🍀</span>今日幸运</div>
+      <div class="lucky-row" id="luckyRow"></div>
+    </div>
+
+    <!-- 语录 -->
+    <div class="quote-card" id="quoteCard"></div>
+
+    <!-- 星座秘密 -->
+    <div class="section"><div class="section-header"><span class="section-icon">🔐</span><span class="section-title">星座秘密</span><div class="section-line"></div></div></div>
+    <div class="card" id="secretCard"></div>
+  </div>
+
+  <!-- ==================== 运势 ==================== -->
+  <div id="nav-fortune" class="tab-content">
+    <div class="header">
+      <div class="header-icon">🔮</div>
+      <div class="header-title">运势分析</div>
+    </div>
+
+    <div class="select-wrap">
+      <div class="select-label">切换星座</div>
+      <div class="select-grid" id="fortuneSignGrid"></div>
+    </div>
+
+    <div class="period-nav">
+      <button class="period-btn active" onclick="switchPeriod('day', this)">今日</button>
+      <button class="period-btn" onclick="switchPeriod('week', this)">本周</button>
+      <button class="period-btn" onclick="switchPeriod('month', this)">本月</button>
+      <button class="period-btn" onclick="switchPeriod('year', this)">今年</button>
+    </div>
+
+    <div class="card"><div class="card-title"><span class="icon">📊</span>运势总览</div><div class="fortune-grid" id="fortuneGrid"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">✨</span>运势提醒</div><div id="fortuneTips"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">🌙</span>本月关键星象</div><div id="astroEvents"></div></div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">💼</span>职业匹配</div>
+      <div id="careerMatchCard"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🎬</span>明星配对</div>
+      <div id="celebCard"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📅</span>年度复盘</div>
+      <div id="monthReviewCard"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📄</span>学术论文参考</div>
+      <div id="paperSection"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🎲</span>每日抽签</div>
+      <div class="shake-card" style="padding:0;border:none;background:transparent">
+        <div class="shake-title">摇一摇，今日命运如何？</div>
+        <button class="shake-btn" onclick="doShake()">🎲 摇一摇求签</button>
+        <div class="lottery-result" id="lotteryResult">
+          <div class="lottery-sign" id="lotterySign"></div>
+          <div class="lottery-name" id="lotteryName"></div>
+          <div class="lottery-desc" id="lotteryDesc"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 爱情 ==================== -->
+  <div id="nav-love" class="tab-content">
+    <div class="header">
+      <div class="header-icon">❤️</div>
+      <div class="header-title">爱情分析</div>
+    </div>
+
+    <div class="select-wrap">
+      <div class="select-label">切换星座</div>
+      <div class="select-grid" id="loveSignGrid"></div>
+    </div>
+
+    <div class="period-nav">
+      <button class="period-btn active" onclick="switchPeriodLove('day', this)">今日</button>
+      <button class="period-btn" onclick="switchPeriodLove('week', this)">本周</button>
+      <button class="period-btn" onclick="switchPeriodLove('month', this)">本月</button>
+    </div>
+
+    <div class="card"><div class="card-title"><span class="icon">💘</span>爱情运势</div><div class="fortune-grid" id="loveGrid"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">💬</span>恋爱建议</div><div id="loveTips"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">🌸</span>提升桃花运</div><div id="flowerTips"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">⚠️</span>感情雷区</div><div id="loveWarn"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">📍</span>约会地点推荐</div><div id="dateLocations"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">🧠</span>爱情心理分析</div><div id="lovePsych"></div></div>
+  </div>
+
+  <!-- ==================== 我的 ==================== -->
+  <div id="nav-mine" class="tab-content">
+    <div class="header">
+      <div class="header-icon">👤</div>
+      <div class="header-title">我的收藏</div>
+    </div>
+
+    <div class="hero-card" id="mineHero"></div>
+
+    <!-- 生日运势 -->
+    <div class="section"><div class="section-header"><span class="section-icon">🎂</span><span class="section-title">生日当日运势</span><div class="section-line"></div></div></div>
+    <div class="birthday-fortune-card" id="birthdayFortuneCard"></div>
+
+    <div class="card"><div class="card-title"><span class="icon">💕</span>我的配对收藏</div><div id="savedCompat"></div></div>
+
+    <div class="card"><div class="card-title"><span class="icon">🧬</span>我的MBTI档案</div><div id="mineMbti"></div></div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📤</span>分享我的星座</div>
+      <div class="share-card-preview" id="sharePreview"></div>
+      <button class="action-btn action-primary" onclick="shareResult()">📤 复制分享文案</button>
+    </div>
+
+    <div class="card"><div class="card-title"><span class="icon">💪</span>健康评分</div><div class="health-grid" id="healthGrid"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">🥗</span>饮食建议</div><div id="dietTips"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">💰</span>财运分析</div><div id="mineMoney"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">🎓</span>学习/考试运</div><div id="mineStudy"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">🧘</span>解压方式</div><div id="relaxTips"></div></div>
+    <div class="card"><div class="card-title"><span class="icon">😴</span>作息建议</div><div id="sleepTips"></div></div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🗑️</span>清除数据</div>
+      <button class="action-btn action-secondary" onclick="clearData()">清除所有保存的数据</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
