@@ -2,218 +2,318 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>星座殿堂 · 学术版</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakFlow — 智能英语口语学习</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body class="fire">
+<body>
 
-<div id="particles"></div>
-<div id="toast" class="toast">已保存 ✨</div>
-
-<!-- 底部导航 -->
-<nav class="bottom-nav">
-  <button class="nav-btn active" onclick="switchNav('overview', this)">
-    <div class="nav-icon">🏠</div><div class="nav-label">首页</div>
-  </button>
-  <button class="nav-btn" onclick="switchNav('fortune', this)">
-    <div class="nav-icon">🔮</div><div class="nav-label">运势</div>
-  </button>
-  <button class="nav-btn" onclick="switchNav('love', this)">
-    <div class="nav-icon">❤️</div><div class="nav-label">爱情</div>
-  </button>
-  <button class="nav-btn" onclick="switchNav('mine', this)">
-    <div class="nav-icon">👤</div><div class="nav-label">我的</div>
-  </button>
-</nav>
-
-<div class="container">
-
-  <!-- ==================== 首页 ==================== -->
-  <div id="nav-overview" class="tab-content active">
-
-    <div class="header">
-      <div class="header-icon">✨</div>
-      <div class="header-title">星座殿堂</div>
-      <div class="header-sub">学术版 · MBTI人格分析 · 2026完整运势</div>
-    </div>
-
-    <!-- 生日识别 -->
-    <div class="card">
-      <div class="card-title"><span class="icon">🎂</span>自动识别星座</div>
-      <div class="birthday-row">
-        <input class="birthday-input" type="date" id="birthdayInput">
-        <button class="detect-btn" onclick="detectFromBirthday()">识别</button>
-      </div>
-      <div class="birthday-result" id="birthdayResult"></div>
-    </div>
-
-    <!-- 星座选择器 -->
-    <div class="select-wrap">
-      <div class="select-label">— 选择你的星座 —</div>
-      <div class="select-grid" id="signGrid"></div>
-    </div>
-
-    <!-- 英雄卡片 -->
-    <div class="hero-card">
-      <span class="hero-sign" id="heroSign">♈</span>
-      <div class="hero-name" id="heroName">白羊座</div>
-      <div class="hero-date" id="heroDate">3月21日 - 4月19日</div>
-      <div class="hero-element" id="heroElement">🔥 火象星座</div>
-      <div class="subtype-row" id="subtypeRow"></div>
-      <div class="hero-traits" id="heroTraits"></div>
-    </div>
-
-    <!-- MBTI -->
-    <div class="section"><div class="section-header"><span class="section-icon">🧬</span><span class="section-title">MBTI人格分析</span><div class="section-line"></div></div></div>
-    <div class="card" id="mbtiSection"></div>
-
-    <!-- 评分 -->
-    <div class="card">
-      <div class="card-title"><span class="icon">⭐</span>六大维度评分</div>
-      <div class="ring-wrap" id="scoreRings"></div>
-    </div>
-
-    <!-- 性格详解 -->
-    <div class="section"><div class="section-header"><span class="section-icon">🧠</span><span class="section-title">性格详解</span><div class="section-line"></div></div></div>
-    <div class="card" id="personalityCard"></div>
-
-    <!-- 幸运物 -->
-    <div class="card">
-      <div class="card-title"><span class="icon">🍀</span>今日幸运</div>
-      <div class="lucky-row" id="luckyRow"></div>
-    </div>
-
-    <!-- 语录 -->
-    <div class="quote-card" id="quoteCard"></div>
-
-    <!-- 星座秘密 -->
-    <div class="section"><div class="section-header"><span class="section-icon">🔐</span><span class="section-title">星座秘密</span><div class="section-line"></div></div></div>
-    <div class="card" id="secretCard"></div>
+<!-- Header -->
+<header>
+  <div class="logo" onclick="App.switchPage('home')">
+    <div class="logo-icon">SF</div>
+    <span>Speak<span class="accent">Flow</span></span>
   </div>
-
-  <!-- ==================== 运势 ==================== -->
-  <div id="nav-fortune" class="tab-content">
-    <div class="header">
-      <div class="header-icon">🔮</div>
-      <div class="header-title">运势分析</div>
+  <nav>
+    <button class="nav-btn active" id="nav-home" onclick="App.switchPage('home')">首页</button>
+    <button class="nav-btn" id="nav-center" onclick="App.switchPage('center')">学习中心</button>
+    <button class="nav-btn" id="nav-course" onclick="App.switchPage('course')">我的课程</button>
+    <button class="nav-btn" id="nav-community" onclick="App.switchPage('community')">社区</button>
+    <button class="nav-btn" id="nav-videos" onclick="App.switchPage('videos')">视频库</button>
+  </nav>
+  <div class="header-actions">
+    <div id="header-unauth">
+      <button class="btn btn-ghost" onclick="Auth.showLogin('login')">登录</button>
+      <button class="btn btn-primary" onclick="Auth.showLogin('register')">注册</button>
     </div>
-
-    <div class="select-wrap">
-      <div class="select-label">切换星座</div>
-      <div class="select-grid" id="fortuneSignGrid"></div>
+    <div id="header-auth" class="user-profile" style="display:none" onclick="App.showProfileMenu()">
+      <div class="user-info">
+        <div class="user-name" id="headerUserName">—</div>
+        <div class="user-level">Lv.<span id="headerUserLevel">1</span></div>
+      </div>
+      <div class="avatar-btn" id="headerAvatar">?</div>
     </div>
+  </div>
+</header>
 
-    <div class="period-nav">
-      <button class="period-btn active" onclick="switchPeriod('day', this)">今日</button>
-      <button class="period-btn" onclick="switchPeriod('week', this)">本周</button>
-      <button class="period-btn" onclick="switchPeriod('month', this)">本月</button>
-      <button class="period-btn" onclick="switchPeriod('year', this)">今年</button>
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div class="page active" id="page-home">
+
+  <section class="hero">
+    <div class="hero-badge">AI 智能分析 · 个性化学习方案</div>
+    <h1>上传视频，<em>智能生成</em><br>你的专属学习内容</h1>
+    <p>上传任何英语视频 — 电影片段、演讲、采访、教程 — AI 深度分析，生成专属词汇表、句型练习和文化背景。</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">开始上传视频</button>
+      <button class="btn btn-ghost" onclick="App.switchPage('videos')">浏览视频库</button>
     </div>
+  </section>
 
-    <div class="card"><div class="card-title"><span class="icon">📊</span>运势总览</div><div class="fortune-grid" id="fortuneGrid"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">✨</span>运势提醒</div><div id="fortuneTips"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">🌙</span>本月关键星象</div><div id="astroEvents"></div></div>
-
-    <div class="card">
-      <div class="card-title"><span class="icon">💼</span>职业匹配</div>
-      <div id="careerMatchCard"></div>
+  <!-- Video Library Preview -->
+  <section class="section" id="videoPreview">
+    <div class="section-head">
+      <h2>精选真实视频</h2>
+      <span class="see-all" onclick="App.switchPage('videos')">查看全部 →</span>
     </div>
+    <div class="video-grid" id="homeVideoGrid"></div>
+  </section>
 
-    <div class="card">
-      <div class="card-title"><span class="icon">🎬</span>明星配对</div>
-      <div id="celebCard"></div>
+  <!-- Upload -->
+  <section class="upload-section">
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept="video/*">
+      <div class="upload-icon">+</div>
+      <h3>拖拽视频到此处，或点击选择文件</h3>
+      <p>支持 MP4 / MOV / AVI / WEBM 格式，时长建议 30 秒 ~ 10 分钟</p>
+      <div class="formats">
+        <span class="format-tag">MP4</span><span class="format-tag">MOV</span><span class="format-tag">AVI</span>
+        <span class="format-tag">WEBM</span><span class="format-tag">最大 500MB</span>
+      </div>
     </div>
+  </section>
 
-    <div class="card">
-      <div class="card-title"><span class="icon">📅</span>年度复盘</div>
-      <div id="monthReviewCard"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="icon">📄</span>学术论文参考</div>
-      <div id="paperSection"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="icon">🎲</span>每日抽签</div>
-      <div class="shake-card" style="padding:0;border:none;background:transparent">
-        <div class="shake-title">摇一摇，今日命运如何？</div>
-        <button class="shake-btn" onclick="doShake()">🎲 摇一摇求签</button>
-        <div class="lottery-result" id="lotteryResult">
-          <div class="lottery-sign" id="lotterySign"></div>
-          <div class="lottery-name" id="lotteryName"></div>
-          <div class="lottery-desc" id="lotteryDesc"></div>
+  <!-- Preview -->
+  <section class="preview-section" id="previewSection">
+    <div class="video-preview">
+      <video id="videoPlayer" controls></video>
+      <div class="video-info">
+        <div class="video-meta">
+          <div class="video-name" id="videoName"></div>
+          <div class="video-size" id="videoSize"></div>
         </div>
+        <button class="btn btn-danger btn-sm" id="removeBtn">移除</button>
       </div>
     </div>
-  </div>
+    <button class="btn-analyze" id="analyzeBtn" onclick="Analysis.start()">
+      <span id="btnIcon">AI</span>
+      <span id="btnText">开始 AI 分析</span>
+    </button>
+  </section>
 
-  <!-- ==================== 爱情 ==================== -->
-  <div id="nav-love" class="tab-content">
-    <div class="header">
-      <div class="header-icon">❤️</div>
-      <div class="header-title">爱情分析</div>
+  <!-- Results -->
+  <section class="results-section" id="resultsSection">
+    <div class="results-header">
+      <h2>学习内容已生成</h2>
+      <p>基于视频内容，AI 为你定制了以下学习材料</p>
     </div>
-
-    <div class="select-wrap">
-      <div class="select-label">切换星座</div>
-      <div class="select-grid" id="loveSignGrid"></div>
+    <div class="score-grid" id="scoreGrid"></div>
+    <div class="content-grid" id="contentGrid"></div>
+    <div class="practice-section" id="practiceSection"></div>
+    <div class="learning-path" id="learningPath"></div>
+    <div class="results-cta">
+      <button class="btn btn-primary" onclick="Analysis.savePlan()">保存学习计划</button>
+      <button class="btn btn-ghost" onclick="Analysis.reset()">分析新视频</button>
     </div>
-
-    <div class="period-nav">
-      <button class="period-btn active" onclick="switchPeriodLove('day', this)">今日</button>
-      <button class="period-btn" onclick="switchPeriodLove('week', this)">本周</button>
-      <button class="period-btn" onclick="switchPeriodLove('month', this)">本月</button>
-    </div>
-
-    <div class="card"><div class="card-title"><span class="icon">💘</span>爱情运势</div><div class="fortune-grid" id="loveGrid"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">💬</span>恋爱建议</div><div id="loveTips"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">🌸</span>提升桃花运</div><div id="flowerTips"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">⚠️</span>感情雷区</div><div id="loveWarn"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">📍</span>约会地点推荐</div><div id="dateLocations"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">🧠</span>爱情心理分析</div><div id="lovePsych"></div></div>
-  </div>
-
-  <!-- ==================== 我的 ==================== -->
-  <div id="nav-mine" class="tab-content">
-    <div class="header">
-      <div class="header-icon">👤</div>
-      <div class="header-title">我的收藏</div>
-    </div>
-
-    <div class="hero-card" id="mineHero"></div>
-
-    <!-- 生日运势 -->
-    <div class="section"><div class="section-header"><span class="section-icon">🎂</span><span class="section-title">生日当日运势</span><div class="section-line"></div></div></div>
-    <div class="birthday-fortune-card" id="birthdayFortuneCard"></div>
-
-    <div class="card"><div class="card-title"><span class="icon">💕</span>我的配对收藏</div><div id="savedCompat"></div></div>
-
-    <div class="card"><div class="card-title"><span class="icon">🧬</span>我的MBTI档案</div><div id="mineMbti"></div></div>
-
-    <div class="card">
-      <div class="card-title"><span class="icon">📤</span>分享我的星座</div>
-      <div class="share-card-preview" id="sharePreview"></div>
-      <button class="action-btn action-primary" onclick="shareResult()">📤 复制分享文案</button>
-    </div>
-
-    <div class="card"><div class="card-title"><span class="icon">💪</span>健康评分</div><div class="health-grid" id="healthGrid"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">🥗</span>饮食建议</div><div id="dietTips"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">💰</span>财运分析</div><div id="mineMoney"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">🎓</span>学习/考试运</div><div id="mineStudy"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">🧘</span>解压方式</div><div id="relaxTips"></div></div>
-    <div class="card"><div class="card-title"><span class="icon">😴</span>作息建议</div><div id="sleepTips"></div></div>
-
-    <div class="card">
-      <div class="card-title"><span class="icon">🗑️</span>清除数据</div>
-      <button class="action-btn action-secondary" onclick="clearData()">清除所有保存的数据</button>
-    </div>
-  </div>
-
+  </section>
 </div>
 
-<script src="data.js"></script>
-<script src="main.js"></script>
+<!-- ══════════════ 学习中心 PAGE ══════════════ -->
+<div class="page" id="page-center">
+  <div class="center-page">
+    <div class="center-hero">
+      <h1>学习中心</h1>
+      <p>系统化学习路径，从零基础到流利表达</p>
+    </div>
+    <div class="stats-bar" id="statsBar"></div>
+    <div class="section-head"><h2>精选课程</h2><span class="see-all" onclick="App.switchPage('course')">查看全部 →</span></div>
+    <div class="course-grid" id="courseGrid"></div>
+    <div class="section-head"><h2>选择你的级别</h2></div>
+    <div class="level-grid">
+      <div class="level-card beginner" onclick="App.selectLevel('beginner')"><div class="level-icon">B</div><div class="level-title">初级 Beginner</div><div class="level-desc">零基础入门，音标、基础词汇、日常问候语</div></div>
+      <div class="level-card intermediate" onclick="App.selectLevel('intermediate')"><div class="level-icon">I</div><div class="level-title">中级 Intermediate</div><div class="level-desc">日常对话、看剧学英语、词汇量 3000-6000</div></div>
+      <div class="level-card advanced" onclick="App.selectLevel('advanced')"><div class="level-icon">A</div><div class="level-title">高级 Advanced</div><div class="level-desc">商务英语、学术演讲、雅思托福备考</div></div>
+    </div>
+    <div class="section-head" style="margin-top:40px"><h2>专项训练</h2></div>
+    <div class="course-grid" id="practiceGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ 我的课程 PAGE ══════════════ -->
+<div class="page" id="page-course">
+  <div class="mycourse-page">
+    <div class="mycourse-header">
+      <h1>我的课程</h1>
+      <div class="filter-tabs" id="courseFilterTabs">
+        <button class="filter-tab active" onclick="Courses.filter('all', this)">全部</button>
+        <button class="filter-tab" onclick="Courses.filter('learning', this)">学习中</button>
+        <button class="filter-tab" onclick="Courses.filter('done', this)">已完成</button>
+        <button class="filter-tab" onclick="Courses.filter('saved', this)">收藏</button>
+      </div>
+    </div>
+    <div id="mycourseList"></div>
+  </div>
+</div>
+
+<!-- ══════════════ 视频库 PAGE ══════════════ -->
+<div class="page" id="page-videos">
+  <div class="videos-page">
+    <div class="videos-hero">
+      <h1>视频库</h1>
+      <p>精选真实英语学习视频，支持在线播放，边看边学</p>
+    </div>
+    <div class="filter-tabs" style="margin-bottom:24px">
+      <button class="filter-tab active" onclick="Videos.filter('all', this)">全部</button>
+      <button class="filter-tab" onclick="Videos.filter('听力', this)">听力</button>
+      <button class="filter-tab" onclick="Videos.filter('口语', this)">口语</button>
+      <button class="filter-tab" onclick="Videos.filter('考试', this)">考试</button>
+      <button class="filter-tab" onclick="Videos.filter('影视', this)">影视</button>
+      <button class="filter-tab" onclick="Videos.filter('综合', this)">综合</button>
+    </div>
+    <div class="video-library-grid" id="videoLibraryGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ 视频播放 MODAL ══════════════ -->
+<div class="modal-overlay" id="videoModal">
+  <div class="modal video-modal">
+    <button class="modal-close" onclick="Videos.close()">X</button>
+    <div class="video-player-wrap" id="videoPlayerWrap">
+      <!-- YouTube iframe or local video player goes here -->
+    </div>
+    <div class="video-info-panel" id="videoInfoPanel">
+      <div class="video-info-header">
+        <h2 id="modalVideoTitle"></h2>
+        <div class="video-meta-row">
+          <span class="video-badge" id="modalVideoBadge"></span>
+          <span class="video-level" id="modalVideoLevel"></span>
+          <span class="video-platform" id="modalVideoPlatform"></span>
+        </div>
+        <p class="video-desc" id="modalVideoDesc"></p>
+      </div>
+      <div class="video-tabs">
+        <button class="video-tab active" onclick="Videos.switchTab('transcript', this)">原文转写</button>
+        <button class="video-tab" onclick="Videos.switchTab('vocab', this)">核心词汇</button>
+        <button class="video-tab" onclick="Videos.switchTab('practice', this)">跟读练习</button>
+      </div>
+      <div class="video-tab-content" id="videoTabContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 社区 PAGE ══════════════ -->
+<div class="page" id="page-community">
+  <div class="community-page">
+    <div class="community-header">
+      <h1>社区</h1>
+      <button class="btn btn-primary" onclick="Community.focusPost()">发布动态</button>
+    </div>
+    <div class="community-layout">
+      <div>
+        <div class="post-input-box">
+          <textarea id="postTextarea" placeholder="分享你的学习心得、提问或求助..." rows="3"></textarea>
+          <div class="post-input-actions">
+            <div class="post-emoji-btns">
+              <button class="emoji-btn" onclick="Community.addEmoji('happy')">happy</button>
+              <button class="emoji-btn" onclick="Community.addEmoji('thinking')">thinking</button>
+              <button class="emoji-btn" onclick="Community.addEmoji('idea')">idea</button>
+              <button class="emoji-btn" onclick="Community.addEmoji('book')">book</button>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="Community.submitPost()">发布</button>
+          </div>
+        </div>
+        <div id="postsFeed"></div>
+      </div>
+      <div class="community-sidebar">
+        <div class="sidebar-card"><h4>热门话题</h4><div id="hotTopics"></div></div>
+        <div class="sidebar-card"><h4>活跃学员</h4><div id="activeMembers"></div></div>
+        <div class="sidebar-card"><h4>社区规则</h4><div class="sidebar-rules"><p>友善交流，尊重他人</p><p>分享真实学习心得</p><p>禁止广告和刷屏</p><p>共同维护社区氛围</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ LOGIN MODAL ══════════════ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="Auth.hideLogin()">X</button>
+    <div class="modal-logo">
+      <div class="modal-logo-icon">SF</div>
+      <h2 id="modalTitle">登录 SpeakFlow</h2>
+      <p id="modalSubtitle">欢迎回来，继续你的英语学习之旅</p>
+    </div>
+    <div id="loginForm">
+      <div class="form-group"><label>邮箱 / 用户名</label><input type="text" class="form-input" id="loginEmail" placeholder="your@email.com"><div class="form-error" id="loginEmailErr"></div></div>
+      <div class="form-group"><label>密码</label><input type="password" class="form-input" id="loginPassword" placeholder="密码"><div class="form-error" id="loginPwdErr"></div><div class="forgot-link">忘记密码？</div></div>
+      <button class="form-submit" onclick="Auth.doLogin()">登录</button>
+      <div class="form-divider">或</div>
+      <div class="social-login">
+        <button class="social-btn" onclick="Auth.socialLogin('google')"><span>G</span><span>Google</span></button>
+        <button class="social-btn" onclick="Auth.socialLogin('github')"><span>gh</span><span>GitHub</span></button>
+        <button class="social-btn wx-btn" onclick="Auth.wechatLogin()"><span>W</span><span>微信</span></button>
+      </div>
+      <div class="modal-switch">还没有账号？<a onclick="Auth.switchModal('register')">立即注册</a></div>
+    </div>
+    <div id="registerForm" style="display:none">
+      <div class="form-group"><label>用户名</label><input type="text" class="form-input" id="regName" placeholder="取一个好听的昵称"><div class="form-error" id="regNameErr"></div></div>
+      <div class="form-group"><label>邮箱</label><input type="email" class="form-input" id="regEmail" placeholder="your@email.com"><div class="form-error" id="regEmailErr"></div></div>
+      <div class="form-group"><label>密码（至少8位，含字母和数字）</label><input type="password" class="form-input" id="regPassword" placeholder="密码"><div class="form-error" id="regPwdErr"></div></div>
+      <div class="form-group"><label>确认密码</label><input type="password" class="form-input" id="regPassword2" placeholder="再输一次"><div class="form-error" id="regPwd2Err"></div></div>
+      <button class="form-submit" onclick="Auth.doRegister()">注册账号</button>
+      <div class="modal-switch">已有账号？<a onclick="Auth.switchModal('login')">立即登录</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 微信登录 MODAL ══════════════ -->
+<div class="modal-overlay" id="wechatModal">
+  <div class="modal wechat-modal">
+    <button class="modal-close" onclick="Auth.hideWechat()">X</button>
+    <div class="wechat-header">
+      <div class="wechat-logo">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="#07C160"><path d="M8.5 11a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm7 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm-3.5 9.5c-3.5 0-6.5-1.8-8-4.5l1.2-.6c1.3 2.2 3.8 3.6 6.8 3.6 1.7 0 3.2-.4 4.5-1.1l.9.9c-1.5 1-3.3 1.7-5.4 1.7zM12 2C6.5 2 2 6 2 11c0 2.5 1.3 4.7 3.2 6.2L4.3 19.5l3.2-1.7c1.5.8 3.2 1.2 4.5 1.2 5.5 0 10-4 10-9S17.5 2 12 2z"/></svg>
+      </div>
+      <h2>微信扫码登录</h2>
+      <p id="wechatStatus">请使用微信扫描下方二维码</p>
+    </div>
+
+<!-- 二维码区域 -->
+    <div class="wechat-qrbox" id="wechatQRBox">
+      <div id="wechatQR">
+        <div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px">加载中...</div>
+      </div>
+    </div>
+    <!-- 演示调试按钮 -->
+    <div style="text-align:center;margin-top:10px;margin-bottom:6px">
+      <button class="btn btn-ghost btn-sm" id="mockScanBtn" onclick="mockScan()" style="border-color:rgba(7,193,96,.3);color:#07C160;font-size:11px;padding:5px 12px">&#128247; 我已扫码（演示）</button>
+    </div>
+
+<!-- 扫码成功确认区域 -->
+    <div class="wechat-confirm" id="wechatConfirm" style="display:none">
+      <div class="wechat-confirm-avatar" id="wxConfirmAvatar">?</div>
+      <div class="wechat-confirm-name" id="wxConfirmName">微信用户</div>
+      <div class="wechat-confirm-tip">请在手机上确认登录</div>
+      <div class="wechat-waiting-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="wechat-confirm-actions">
+        <button class="btn btn-ghost btn-sm" onclick="Auth.cancelWechat()">取消</button>
+        <button class="btn btn-primary btn-sm" onclick="Auth.confirmWechat()">确认登录</button>
+      </div>
+    </div>
+
+    <!-- 登录成功区域 -->
+    <div class="wechat-success" id="wechatSuccess" style="display:none">
+      <div class="wechat-success-icon">OK</div>
+      <div class="wechat-success-name" id="wxSuccessName"></div>
+      <div class="wechat-success-tip">登录成功！</div>
+    </div>
+
+    <div class="wechat-footer">
+      <a onclick="Auth.hideWechat(); Auth.switchModal('login')">返回账号登录</a>
+      <span>·</span>
+      <span>登录即表示同意 <a>用户协议</a></span>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<!-- Footer -->
+<footer><p>SpeakFlow — 智能英语学习平台 | AI 让英语学习更高效</p></footer>
+
+<script src="data/video-courses.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
